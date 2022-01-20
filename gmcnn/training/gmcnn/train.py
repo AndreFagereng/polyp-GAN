@@ -25,6 +25,7 @@ print('loading data..')
 #]))
 
 
+
 dataset = KvasirDataset(root_path="c:/Users/Jegern/Masteroppgave/data/kvasir-seq-1000/Kvasir-SEG/", transform=transforms.Compose([ToTensor()]))
 
 dataloader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True, num_workers=0, drop_last=True)
