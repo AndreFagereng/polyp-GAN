@@ -3,8 +3,12 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 import torchvision.utils as vutils
 import sys
-sys.path.append("c:\\Users\\Jegern\\Masteroppgave\\src")
-print(sys.path)
+
+# Run directly from train.py
+from pathlib import Path
+sys.path.append(str(Path(os.path.join(os.getcwd(), 'src'))))
+#sys.path.append("c:\\Users\\Jegern\\Masteroppgave\\src")
+
 from tensorboardX import SummaryWriter
 #from data.data import InpaintingDataset, ToTensor
 #from data.dataset import KvasirDataset, ToTensor

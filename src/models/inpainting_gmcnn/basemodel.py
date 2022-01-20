@@ -17,6 +17,7 @@ class BaseModel(nn.Module):
     def setInput(self, inputData):
         self.input = inputData
 
+
     def forward(self):
         pass
 

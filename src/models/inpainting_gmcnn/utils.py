@@ -74,8 +74,6 @@ def generate_stroke_mask(im_size, parts=10, maxVertex=20, maxLength=100, maxBrus
 def generate_mask(type, im_size, mask_size):
     if type == 'rect':
         return generate_rect_mask(im_size, mask_size)
-    elif type == 'mask':
-        pass
     else:
         return generate_stroke_mask(im_size), None
 

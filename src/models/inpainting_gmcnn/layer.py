@@ -61,10 +61,7 @@ class GaussianBlurLayer(nn.Module):
         kernel = gauss_kernel(self.size, self.sigma, self.ch, self.ch)
         kernel_tensor = torch.from_numpy(kernel)
         kernel_tensor = kernel_tensor.cuda()
-        print(x)
-        print(type(x))
         x = self.pad(x)
-        print('NOT HERE')
         blurred = F.conv2d(x, kernel_tensor, stride=self.stride)
         return blurred
 
@@ -82,7 +79,6 @@ class ConfidenceDrivenMaskLayer(nn.Module):
         init = 1 - mask
         mask_confidence = None
         for i in range(self.iters):
-            print('INIT', init)
             mask_confidence = self.propagationLayer(init)
             mask_confidence = mask_confidence * mask
             init = mask_confidence + (1 - mask)
