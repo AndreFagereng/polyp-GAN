@@ -44,6 +44,7 @@ def np_free_form_mask(maxVertex, maxLength, maxBrushWidth, maxAngle, h, w):
     return mask
 
 
+
 def generate_rect_mask(im_size, mask_size, margin=8, rand_mask=True):
     mask = np.zeros((im_size[0], im_size[1])).astype(np.float32)
     if rand_mask:
@@ -59,6 +60,7 @@ def generate_rect_mask(im_size, mask_size, margin=8, rand_mask=True):
     mask = np.expand_dims(mask, axis=0)
     rect = np.array([[of0, sz0, of1, sz1]], dtype=int)
     return mask, rect
+
 
 
 def generate_stroke_mask(im_size, parts=10, maxVertex=20, maxLength=100, maxBrushWidth=24, maxAngle=360):
