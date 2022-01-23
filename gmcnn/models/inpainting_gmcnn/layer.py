@@ -76,8 +76,10 @@ class ConfidenceDrivenMaskLayer(nn.Module):
 
     def forward(self, mask):
         # here mask 1 indicates missing pixels and 0 indicates the valid pixels
+
         init = 1 - mask
         mask_confidence = None
+
         for i in range(self.iters):
             mask_confidence = self.propagationLayer(init)
             mask_confidence = mask_confidence * mask

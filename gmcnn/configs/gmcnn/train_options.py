@@ -13,13 +13,13 @@ class TrainOptions:
         self.parser.add_argument('--dataset', type=str, default='kvasir_1000',
                                  help='dataset of the experiment.')
         self.parser.add_argument('--data_file', type=str, default='', help='the file storing training image paths')
-        self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2')
+        self.parser.add_argument('--gpu_ids', type=str, default='1', help='gpu ids: e.g. 0  0,1,2')
         self.parser.add_argument('--checkpoint_dir', type=str, default='./checkpoints/GMCNN', help='models are saved here')
         self.parser.add_argument('--load_model_dir', type=str, default='', help='pretrained models are given here')
         self.parser.add_argument('--phase', type=str, default='train')
 
         # input/output sizes
-        self.parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
+        self.parser.add_argument('--batch_size', type=int, default=6, help='input batch size')
 
         # for setting inputs
         self.parser.add_argument('--random_crop', type=int, default=1,

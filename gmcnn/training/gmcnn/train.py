@@ -6,7 +6,7 @@ import sys
 
 # Run directly from train.py
 from pathlib import Path
-sys.path.append(str(Path(os.path.join(os.getcwd(), 'src'))))
+sys.path.append(str(Path(os.path.join(os.getcwd(), 'gmcnn'))))
 #sys.path.append("c:\\Users\\Jegern\\Masteroppgave\\src")
 
 from tensorboardX import SummaryWriter
@@ -24,9 +24,7 @@ print('loading data..')
 #    ToTensor()
 #]))
 
-
-
-dataset = KvasirDataset(root_path="c:/Users/Jegern/Masteroppgave/data/kvasir-seq-1000/Kvasir-SEG/", transform=transforms.Compose([ToTensor()]))
+dataset = KvasirDataset(root_path="data/kvasir-seq-1000/Kvasir-SEG/", transform=transforms.Compose([ToTensor()]))
 
 dataloader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True, num_workers=0, drop_last=True)
 print('data loaded..')

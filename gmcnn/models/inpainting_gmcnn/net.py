@@ -277,14 +277,20 @@ class InpaintingModel_GMCNN(BaseModel):
         if self.opt.mask_type in ['rect', 'stroke']:
             mask, rect = generate_mask(self.opt.mask_type, self.opt.img_shapes, self.opt.mask_shapes)
             self.mask_01 = torch.from_numpy(mask).cuda().repeat([self.opt.batch_size, 1, 1, 1])
+            #print(self.mask_01.dtype)
         elif self.opt.mask_type == 'custom':
             self.mask_01 = mask.unsqueeze(1)
             self.mask_01 = self.mask_01.cpu().numpy().astype(np.float32)
             self.mask_01 = torch.from_numpy(self.mask_01).cuda()      
+            #print(self.mask_01.dtype)
         else:
             raise ValueError('Only supported mask types is (stroke, rect, custom)')
-        
+
+        #print(self.mask_01)
+        #print(self.mask_01.shape)
+        #print(self.mask_01)
         self.mask = self.confidence_mask_layer(self.mask_01)
+        #print(self.mask)
         
         if self.opt.mask_type == 'rect':
             self.rect = [rect[0, 0], rect[0, 1], rect[0, 2], rect[0, 3]]
@@ -296,11 +302,17 @@ class InpaintingModel_GMCNN(BaseModel):
         self.gin = torch.cat((self.im_in, self.mask_01), 1)
 
     def forward_G(self):
+        #print(self.completed)
+        #print('sep')
+        #print(self.mask)
+        
         self.G_loss_reconstruction = self.recloss(self.completed * self.mask, self.gt.detach() * self.mask)
         self.G_loss_reconstruction = self.G_loss_reconstruction / torch.mean(self.mask_01)
         self.G_loss_ae = self.aeloss(self.pred * (1 - self.mask_01), self.gt.detach() * (1 - self.mask_01))
         self.G_loss_ae = self.G_loss_ae / torch.mean(1 - self.mask_01)
         self.G_loss = self.lambda_rec * self.G_loss_reconstruction + self.lambda_ae * self.G_loss_ae
+        #print(self.G_loss_ae)
+        #print(self.G_loss_reconstruction)
         if self.opt.pretrain_network is False:
             # discriminator
             self.completed_logit, self.completed_local_logit = self.netD(self.completed, self.completed_local)

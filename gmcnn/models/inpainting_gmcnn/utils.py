@@ -63,7 +63,7 @@ def generate_rect_mask(im_size, mask_size, margin=8, rand_mask=True):
 
 
 
-def generate_stroke_mask(im_size, parts=10, maxVertex=20, maxLength=100, maxBrushWidth=24, maxAngle=360):
+def generate_stroke_mask(im_size, parts=10, maxVertex=20, maxLength=100, maxBrushWidth=150, maxAngle=360):
     mask = np.zeros((im_size[0], im_size[1], 1), dtype=np.float32)
     for i in range(parts):
         mask = mask + np_free_form_mask(maxVertex, maxLength, maxBrushWidth, maxAngle, im_size[0], im_size[1])

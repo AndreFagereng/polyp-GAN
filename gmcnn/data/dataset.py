@@ -51,7 +51,7 @@ class KvasirDataset(Dataset):
         image = cv2.imread(image_file)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         label = cv2.imread(label_file, cv2.IMREAD_GRAYSCALE)
-     
+        (thresh, label) = cv2.threshold(label, 127, 1, cv2.THRESH_BINARY)
 
         h, w, c = image.shape
         if h != self.im_size[0] or w != self.im_size[1]:
@@ -70,8 +70,15 @@ class KvasirDataset(Dataset):
             
         else:
             im_scaled = np.transpose(image, [2, 0, 1])
+        #print(lb_scaled)
+        #zero_indices = lb_scaled == 0
+        #ones_indices = lb_scaled == 1
+        #lb_scaled[zero_indices] = 1
+        #lb_scaled[ones_indices] = 0
+        #print('sep')
+        #print(lb_scaled)
 
-        return im_scaled, lb_scaled.astype(float)
+        return im_scaled, lb_scaled.astype(np.float32)
 
     def __getitem__(self, idx):
         filename = self.filenames[idx]
