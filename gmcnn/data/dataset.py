@@ -44,6 +44,7 @@ class KvasirDataset(Dataset):
     def __len__(self):
         return len(self.filenames)
     
+    
     def read_image_and_label(self, filename):
         image_file = os.path.join(self._image_path, filename)
         label_file = os.path.join(self._label_path, filename)
