@@ -35,7 +35,6 @@ def np_free_form_mask(maxVertex, maxLength, maxBrushWidth, maxAngle, h, w):
 
         nextY = np.maximum(np.minimum(nextY, h - 1), 0).astype(np.int)
         nextX = np.maximum(np.minimum(nextX, w - 1), 0).astype(np.int)
-
         cv2.line(mask, (startY, startX), (nextY, nextX), 1, brushWidth)
         cv2.circle(mask, (startY, startX), brushWidth // 2, 2)
 
@@ -59,17 +58,20 @@ def generate_rect_mask(im_size, mask_size, margin=8, rand_mask=True):
     mask = np.expand_dims(mask, axis=0)
     mask = np.expand_dims(mask, axis=0)
     rect = np.array([[of0, sz0, of1, sz1]], dtype=int)
+
     return mask, rect
 
 
 
-def generate_stroke_mask(im_size, parts=10, maxVertex=20, maxLength=100, maxBrushWidth=150, maxAngle=360):
+def generate_stroke_mask(im_size, parts=10, maxVertex=10, maxLength=100, maxBrushWidth=24, maxAngle=360):
     mask = np.zeros((im_size[0], im_size[1], 1), dtype=np.float32)
     for i in range(parts):
         mask = mask + np_free_form_mask(maxVertex, maxLength, maxBrushWidth, maxAngle, im_size[0], im_size[1])
+
     mask = np.minimum(mask, 1.0)
     mask = np.transpose(mask, [2, 0, 1])
     mask = np.expand_dims(mask, 0)
+
     return mask
 
 

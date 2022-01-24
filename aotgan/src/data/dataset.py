@@ -10,6 +10,7 @@ import torch
 import torchvision.transforms.functional as F
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
+import matplotlib.pyplot as plt
 
 class InpaintingData(Dataset):
     def __init__(self, args):
@@ -19,9 +20,10 @@ class InpaintingData(Dataset):
         
         # image and mask 
         self.image_path = []
+        self.mask_path = []
         for ext in ['*.jpg', '*.png']: 
             self.image_path.extend(glob(os.path.join(args.dir_image, args.data_train, ext)))
-        self.mask_path = glob(os.path.join(args.dir_mask, args.mask_type, '*.png'))
+            self.mask_path.extend(glob(os.path.join(args.dir_mask, args.mask_type, ext)))
 
         # augmentation 
         self.img_trans = transforms.Compose([
@@ -49,15 +51,21 @@ class InpaintingData(Dataset):
             index = np.random.randint(0, len(self.mask_path))
             mask = Image.open(self.mask_path[index])
             mask = mask.convert('L')
+        elif self.mask_type == 'masks':
+            mask = Image.open(self.mask_path[index])
+            mask = mask.convert('L')
         else:
             mask = np.zeros((self.h, self.w)).astype(np.uint8)
             mask[self.h//4:self.h//4*3, self.w//4:self.w//4*3] = 1
-            mask = Image.fromarray(m).convert('L')
+            mask = Image.fromarray(mask).convert('L')
         
         # augment
         image = self.img_trans(image) * 2. - 1.
         mask = F.to_tensor(self.mask_trans(mask))
 
+        plt.imshow(mask.squeeze(0).numpy(), cmap="gray")
+        plt.show()
+        
         return image, mask, filename
 
 
@@ -66,10 +74,10 @@ if __name__ == '__main__':
 
     from attrdict import AttrDict
     args = {
-        'dir_image': '../../../dataset',
-        'data_train': 'places2',
-        'dir_mask': '../../../dataset',
-        'mask_type': 'pconv',
+        'dir_image': r'C:/Users/Jegern/Masteroppgave/data/kvasir-seq-1000/Kvasir-SEG/',
+        'data_train': 'images',
+        'dir_mask': r'C:/Users/Jegern/Masteroppgave/data/kvasir-seq-1000/Kvasir-SEG/',
+        'mask_type': 'masks',
         'image_size': 512
     }
     args = AttrDict(args)

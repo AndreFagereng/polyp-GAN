@@ -3,17 +3,17 @@ import argparse
 parser = argparse.ArgumentParser(description='Image Inpainting')
 
 # data specifications 
-parser.add_argument('--dir_image', type=str, default='../../dataset',
+parser.add_argument('--dir_image', type=str, default='C:/Users/Jegern/Masteroppgave/data/kvasir-seq-1000/Kvasir-SEG/',
                     help='image dataset directory')
-parser.add_argument('--dir_mask', type=str, default='../../dataset',
+parser.add_argument('--dir_mask', type=str, default='C:/Users/Jegern/Masteroppgave/data/kvasir-seq-1000/Kvasir-SEG/',
                     help='mask dataset directory')
-parser.add_argument('--data_train', type=str, default='places2',
+parser.add_argument('--data_train', type=str, default='images',
                     help='dataname used for training')
 parser.add_argument('--data_test', type=str, default='places2',
                     help='dataname used for testing')
 parser.add_argument('--image_size', type=int, default=512,
                     help='image size used during training')
-parser.add_argument('--mask_type', type=str, default='pconv',
+parser.add_argument('--mask_type', type=str, default='masks',
                     help='mask used during training')
 
 # model specifications 
