@@ -10,7 +10,7 @@ import torch
 import torchvision.transforms.functional as F
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
-import matplotlib.pyplot as plt
+
 
 class InpaintingData(Dataset):
     def __init__(self, args):
@@ -32,7 +32,8 @@ class InpaintingData(Dataset):
             transforms.ColorJitter(0.05, 0.05, 0.05, 0.05),
             transforms.ToTensor()])
         self.mask_trans = transforms.Compose([
-            transforms.Resize(args.image_size, interpolation=transforms.InterpolationMode.NEAREST),
+           # transforms.ToPILImage(),
+            transforms.Resize((args.image_size, args.image_size), interpolation=transforms.InterpolationMode.NEAREST),
             transforms.RandomHorizontalFlip(),
             transforms.RandomRotation(
                 (0, 45), interpolation=transforms.InterpolationMode.NEAREST),
@@ -53,15 +54,16 @@ class InpaintingData(Dataset):
             mask = mask.convert('L')
         elif self.mask_type == 'masks':
             mask = Image.open(self.mask_path[index])
-            mask = mask.convert('L')
+            mask = mask.convert('1')
         else:
             mask = np.zeros((self.h, self.w)).astype(np.uint8)
             mask[self.h//4:self.h//4*3, self.w//4:self.w//4*3] = 1
             mask = Image.fromarray(mask).convert('L')
-        
+
         # augment
         image = self.img_trans(image) * 2. - 1.
         mask = F.to_tensor(self.mask_trans(mask))
+
         
         return image, mask, filename
 

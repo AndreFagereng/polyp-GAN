@@ -38,7 +38,8 @@ if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
 
     # setup distributed parallel training environments
-    ngpus_per_node = torch.cuda.device_count()
+    ngpus_per_node = torch.cuda.device_count() - 1 # Altered
+    
     if ngpus_per_node > 1:
         args.world_size = ngpus_per_node
         args.init_method = f'tcp://127.0.0.1:{args.port}'

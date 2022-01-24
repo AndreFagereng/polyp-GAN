@@ -17,14 +17,12 @@ from models.inpainting_gmcnn.net import InpaintingModel_GMCNN
 from configs.gmcnn.train_options import TrainOptions
 from models.inpainting_gmcnn.utils import getLatest
 
+
 config = TrainOptions().parse()
-
+print(config)
 print('loading data..')
-#dataset = InpaintingDataset(config.dataset_path, '', transform=transforms.Compose([
-#    ToTensor()
-#]))
-
-dataset = KvasirDataset(root_path="data/kvasir-seq-1000/Kvasir-SEG/", transform=transforms.Compose([ToTensor()]))
+print(config.root_path)
+dataset = KvasirDataset(root_path=config.root_path, transform=transforms.Compose([ToTensor()]))
 
 dataloader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True, num_workers=0, drop_last=True)
 print('data loaded..')
@@ -32,6 +30,7 @@ print('data loaded..')
 print('configuring model..')
 ourModel = InpaintingModel_GMCNN(in_channels=4, opt=config)
 ourModel.print_networks()
+print(config.load_model_dir)
 if config.load_model_dir != '':
     print('Loading pretrained model from {}'.format(config.load_model_dir))
     ourModel.load_networks(getLatest(os.path.join(config.load_model_dir, '*.pth')))

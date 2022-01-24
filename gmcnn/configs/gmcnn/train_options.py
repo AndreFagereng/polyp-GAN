@@ -12,6 +12,7 @@ class TrainOptions:
         # experiment specifics
         self.parser.add_argument('--dataset', type=str, default='kvasir_1000',
                                  help='dataset of the experiment.')
+        self.parser.add_argument('--root_path', type=str, default="data/kvasir-seq-1000/Kvasir-SEG", help="root path of images/masks folder")
         self.parser.add_argument('--data_file', type=str, default='', help='the file storing training image paths')
         self.parser.add_argument('--gpu_ids', type=str, default='1', help='gpu ids: e.g. 0  0,1,2')
         self.parser.add_argument('--checkpoint_dir', type=str, default='./checkpoints/GMCNN', help='models are saved here')
@@ -85,6 +86,7 @@ class TrainOptions:
         assert self.opt.pretrain_network in [0, 1]
         self.opt.pretrain_network = True if self.opt.pretrain_network == 1 else False
 
+        print(self.opt.pretrain_network)
         assert self.opt.spectral_norm in [0, 1]
         self.opt.spectral_norm = True if self.opt.spectral_norm == 1 else False
 
