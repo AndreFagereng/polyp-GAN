@@ -282,15 +282,7 @@ class InpaintingModel_GMCNN(BaseModel):
             self.mask_01 = self.mask_01.cpu().numpy().astype(np.float32)
             self.mask_01 = torch.from_numpy(self.mask_01).cuda()      
         else:
-            raise ValueError('Only supported mask types is (stroke, rect, custom)')
-        #from PIL import Image
-        print("HERE")
-        #for i in self.mask_01.squeeze(1).squeeze(0):
-        #    print(i)
-        #print(self.mask_01)
-        #img = Image.fromarray(self.mask_01.squeeze(1)[0].cpu().numpy())
-        #img.show()
-        
+            raise ValueError('Only supported mask types is (stroke, rect, custom)')       
         self.mask = self.confidence_mask_layer(self.mask_01)
         
         if self.opt.mask_type == 'rect':
