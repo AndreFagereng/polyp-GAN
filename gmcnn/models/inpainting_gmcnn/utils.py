@@ -84,5 +84,7 @@ def generate_mask(type, im_size, mask_size):
 
 def getLatest(folder_path):
     files = glob.glob(folder_path)
+    print(os.listdir())
+    print(files)
     file_times = list(map(lambda x: time.ctime(os.path.getctime(x)), files))
     return files[sorted(range(len(file_times)), key=lambda x: file_times[x])[-1]]

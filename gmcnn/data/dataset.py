@@ -13,15 +13,18 @@ class ToTensor(object):
             if k == 'rect':
                 entry[k] = torch.IntTensor(sample[k])
             elif k == 'mask':
-                entry[k] = torch.FloatTensor(sample[k])
+                if type(sample[k]) != type(None):
+                    entry[k] = torch.FloatTensor(sample[k])
             else:
                 entry[k] = torch.FloatTensor(sample[k])
         return entry
 class KvasirDataset(Dataset):
 
 
-    def __init__(self, root_path, transform=None, im_size=(256, 256), image_folder="", label_folder="") -> None:
+    def __init__(self, root_path, args, transform=None, im_size=(256, 256), image_folder="", label_folder="", ) -> None:
         super().__init__()
+
+        self.args = args
 
         if not image_folder:
             image_folder = "images"
@@ -47,12 +50,15 @@ class KvasirDataset(Dataset):
     
     def read_image_and_label(self, filename):
         image_file = os.path.join(self._image_path, filename)
-        label_file = os.path.join(self._label_path, filename)
-
+        if self.args.mask_type == "custom":
+            label_file = os.path.join(self._label_path, filename)
+            label = cv2.imread(label_file, cv2.IMREAD_GRAYSCALE)
+            (thresh, label) = cv2.threshold(label, 127, 1, cv2.THRESH_BINARY)
+        
         image = cv2.imread(image_file)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        label = cv2.imread(label_file, cv2.IMREAD_GRAYSCALE)
-        (thresh, label) = cv2.threshold(label, 127, 1, cv2.THRESH_BINARY)
+        
+        
 
         h, w, c = image.shape
         if h != self.im_size[0] or w != self.im_size[1]:
@@ -66,25 +72,24 @@ class KvasirDataset(Dataset):
             im_scaled = np.transpose(im_scaled, [2, 0, 1])
 
             # Scale mask
-            lb_scaled = cv2.resize(label, None, fx=ratio, fy=ratio)
-            lb_scaled = lb_scaled[h_idx:h_idx+self.im_size[0], w_idx:w_idx+self.im_size[1]]
-            
+            if self.args.mask_type == "custom":
+                lb_scaled = cv2.resize(label, None, fx=ratio, fy=ratio)
+                lb_scaled = lb_scaled[h_idx:h_idx+self.im_size[0], w_idx:w_idx+self.im_size[1]]
+                lb_scaled = lb_scaled.astype(np.float32)
+            else:
+                lb_scaled = None
+
         else:
             im_scaled = np.transpose(image, [2, 0, 1])
-        #print(lb_scaled)
-        #zero_indices = lb_scaled == 0
-        #ones_indices = lb_scaled == 1
-        #lb_scaled[zero_indices] = 1
-        #lb_scaled[ones_indices] = 0
-        #print('sep')
-        #print(lb_scaled)
 
-        return im_scaled, lb_scaled.astype(np.float32)
+
+        return im_scaled, lb_scaled
 
     def __getitem__(self, idx):
         filename = self.filenames[idx]
         image, label = self.read_image_and_label(filename)
-        sample = {'gt': image, 'mask': label}
+    
+        sample = {'gt': image, 'mask': label} if type(label) != type(None) else {'gt': image}
 
         if self.transform:
             self.transform(sample)

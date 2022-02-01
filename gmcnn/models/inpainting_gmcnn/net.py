@@ -272,12 +272,13 @@ class InpaintingModel_GMCNN(BaseModel):
 
     def initVariables(self):
         self.gt = self.input['gt']
-        mask = self.input['mask']
+        
 
         if self.opt.mask_type in ['rect', 'stroke']:
             mask, rect = generate_mask(self.opt.mask_type, self.opt.img_shapes, self.opt.mask_shapes)
             self.mask_01 = torch.from_numpy(mask).cuda().repeat([self.opt.batch_size, 1, 1, 1])
         elif self.opt.mask_type == 'custom':
+            mask = self.input['mask']
             self.mask_01 = mask.unsqueeze(1)
             self.mask_01 = self.mask_01.cpu().numpy().astype(np.float32)
             self.mask_01 = torch.from_numpy(self.mask_01).cuda()      

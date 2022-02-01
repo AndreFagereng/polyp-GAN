@@ -22,7 +22,7 @@ config = TrainOptions().parse()
 print(config)
 print('loading data..')
 print(config.root_path)
-dataset = KvasirDataset(root_path=config.root_path, transform=transforms.Compose([ToTensor()]))
+dataset = KvasirDataset(root_path=config.root_path, transform=transforms.Compose([ToTensor()]), args=config)
 
 dataloader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True, num_workers=0, drop_last=True)
 print('data loaded..')
@@ -44,11 +44,17 @@ for epoch in range(config.epochs):
 
     for i, data in enumerate(dataloader):
         gt = data['gt'].cuda()
-        mask_data = data['mask'].cuda()
-        # normalize to values between -1 and 1
-        gt = gt / 127.5 - 1
+        
+        if config.mask_type == "custom":
+            mask_data = data['mask'].cuda()
+            gt = gt / 127.5 - 1
+            data_in = {'gt': gt, 'mask': mask_data}
+        else:
 
-        data_in = {'gt': gt, 'mask': mask_data}
+            # normalize to values between -1 and 1
+            gt = gt / 127.5 - 1
+            data_in = {'gt': gt}
+        
         ourModel.setInput(data_in)
         ourModel.optimize_parameters()
 

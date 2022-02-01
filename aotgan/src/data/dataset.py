@@ -47,7 +47,6 @@ class InpaintingData(Dataset):
         # load image
         image = Image.open(self.image_path[index]).convert('RGB')
         filename = os.path.basename(self.image_path[index])
-
         if self.mask_type == 'pconv':
             index = np.random.randint(0, len(self.mask_path))
             mask = Image.open(self.mask_path[index])

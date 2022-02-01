@@ -52,7 +52,7 @@ parser.add_argument('--adv_weight', type=float, default=0.01,
                     help='loss weight for adversarial loss')
 
 # training specifications 
-parser.add_argument('--iterations', type=int, default=100,
+parser.add_argument('--iterations', type=int, default=30000,
                     help='the number of iterations for training')
 parser.add_argument('--batch_size', type=int, default=2,
                     help='batch size in each mini-batch')
