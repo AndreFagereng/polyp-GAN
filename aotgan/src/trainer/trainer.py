@@ -12,7 +12,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from data import create_loader 
 from loss import loss as loss_module
 from .common import timer, reduce_loss_dict
-
+import numpy as np
 
 class Trainer():
     def __init__(self, args):
@@ -48,14 +48,15 @@ class Trainer():
             
 
     def load(self):
+        print(self.args.save_dir)
         try: 
             gpath = sorted(list(glob(os.path.join(self.args.save_dir, 'G*.pt'))))[-1]
             self.netG.load_state_dict(torch.load(gpath, map_location='cuda'))
             self.iteration = int(os.path.basename(gpath)[1:-3])
             if self.args.global_rank == 0: 
                 print(f'[**] Loading generator network from {gpath}')
-        except: 
-            pass 
+        except Exception as e: 
+            print(e)
         
         try: 
             dpath = sorted(list(glob(os.path.join(self.args.save_dir, 'D*.pt'))))[-1]

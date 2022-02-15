@@ -1,4 +1,5 @@
 import os
+import cv2
 import math
 import numpy as np
 from glob import glob
@@ -32,7 +33,7 @@ class InpaintingData(Dataset):
             transforms.ColorJitter(0.05, 0.05, 0.05, 0.05),
             transforms.ToTensor()])
         self.mask_trans = transforms.Compose([
-           # transforms.ToPILImage(),
+            #transforms.ToPILImage(),
             transforms.Resize((args.image_size, args.image_size), interpolation=transforms.InterpolationMode.NEAREST),
             transforms.RandomHorizontalFlip(),
             transforms.RandomRotation(
@@ -47,23 +48,32 @@ class InpaintingData(Dataset):
         # load image
         image = Image.open(self.image_path[index]).convert('RGB')
         filename = os.path.basename(self.image_path[index])
-        if self.mask_type == 'pconv':
+        if self.mask_type == 'pconv' or self.mask_type == 'irregular_mask':
             index = np.random.randint(0, len(self.mask_path))
             mask = Image.open(self.mask_path[index])
             mask = mask.convert('L')
+            #print('wrong masks')
+            #print(self.image_path[index])
+            #print(self.mask_path[index])
         elif self.mask_type == 'masks':
             mask = Image.open(self.mask_path[index])
-            mask = mask.convert('1')
-        else:
-            mask = np.zeros((self.h, self.w)).astype(np.uint8)
-            mask[self.h//4:self.h//4*3, self.w//4:self.w//4*3] = 1
-            mask = Image.fromarray(mask).convert('L')
+            #print(self.mask_path[index])
+            mask = mask.convert('L') 
+        #else:
+        #    mask = np.zeros((self.h, self.w)).astype(np.uint8)
+        #    mask[self.h//4:self.h//4*3, self.w//4:self.w//4*3] = 1
+        #    mask = Image.fromarray(mask).convert('L')
 
+        #index = np.random.randint(0, len(self.mask_path))
+        #mask = cv2.imread(self.mask_path[index], cv2.IMREAD_GRAYSCALE)
+        #(thresh, mask) = cv2.threshold(mask, 127, 1, cv2.THRESH_BINARY)
+
+        #mask = np.asarray(mask)
         # augment
         image = self.img_trans(image) * 2. - 1.
         mask = F.to_tensor(self.mask_trans(mask))
-
-        
+        #print(np.unique(mask.view(-1)))
+        #print(mask)
         return image, mask, filename
 
 
