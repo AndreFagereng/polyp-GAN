@@ -40,6 +40,16 @@ class InpaintingData(Dataset):
                 (0, 45), interpolation=transforms.InterpolationMode.NEAREST),
         ])
 
+
+        # finetuning
+        self.img_trans_finetune = transforms.Compose([
+            transforms.Resize((args.image_size, args.image_size), interpolation=transforms.InterpolationMode.NEAREST),
+            transforms.ColorJitter(0.05, 0.05, 0.05, 0.05),
+            transforms.ToTensor()
+        ])
+        self.mask_trans_finetune = transforms.Compose([
+            transforms.Resize((args.image_size, args.image_size), interpolation=transforms.InterpolationMode.NEAREST)
+        ])
         
     def __len__(self):
         return len(self.image_path)
@@ -48,32 +58,29 @@ class InpaintingData(Dataset):
         # load image
         image = Image.open(self.image_path[index]).convert('RGB')
         filename = os.path.basename(self.image_path[index])
+
         if self.mask_type == 'pconv' or self.mask_type == 'irregular_mask':
             index = np.random.randint(0, len(self.mask_path))
             mask = Image.open(self.mask_path[index])
             mask = mask.convert('L')
-            #print('wrong masks')
-            #print(self.image_path[index])
-            #print(self.mask_path[index])
+
         elif self.mask_type == 'masks':
             mask = Image.open(self.mask_path[index])
-            #print(self.mask_path[index])
             mask = mask.convert('L') 
-        #else:
-        #    mask = np.zeros((self.h, self.w)).astype(np.uint8)
-        #    mask[self.h//4:self.h//4*3, self.w//4:self.w//4*3] = 1
-        #    mask = Image.fromarray(mask).convert('L')
+        else:
+            mask = np.zeros((self.h, self.w)).astype(np.uint8)
+            mask[self.h//4:self.h//4*3, self.w//4:self.w//4*3] = 1
+            mask = Image.fromarray(mask).convert('L')
 
-        #index = np.random.randint(0, len(self.mask_path))
-        #mask = cv2.imread(self.mask_path[index], cv2.IMREAD_GRAYSCALE)
-        #(thresh, mask) = cv2.threshold(mask, 127, 1, cv2.THRESH_BINARY)
-
-        #mask = np.asarray(mask)
+        # Finetuning masks, skip augmentations, cropping etc..
+        if self.mask_type == "masks":
+            image = self.img_trans_finetune(image) * 2. - 1.
+            mask = F.to_tensor(self.mask_trans_finetune(mask))
+        else:
         # augment
-        image = self.img_trans(image) * 2. - 1.
-        mask = F.to_tensor(self.mask_trans(mask))
-        #print(np.unique(mask.view(-1)))
-        #print(mask)
+            image = self.img_trans(image) * 2. - 1.
+            mask = F.to_tensor(self.mask_trans(mask))
+
         return image, mask, filename
 
 

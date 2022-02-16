@@ -99,6 +99,7 @@ class Trainer():
             self.iteration += 1
             images, masks, filename = next(self.dataloader)
             images, masks = images.cuda(), masks.cuda()
+
             images_masked = (images * (1 - masks).float()) + masks
 
             if self.args.global_rank == 0: 
