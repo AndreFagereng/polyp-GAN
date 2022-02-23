@@ -8,10 +8,19 @@ import torchvision.transforms.functional as F
 from torch.utils.data import DataLoader
 from PIL import Image
 from scipy.misc import imread
+#from imageio import imread
+#from skimage.transform import resize
 from skimage.feature import canny
 from skimage.color import rgb2gray, gray2rgb
 from .utils import create_mask
 
+def resize(inp, r):
+    
+    return np.array(Image.fromarray(inp).resize(r))
+#def imread(inp):
+#    from PIL import Image
+#import numpy as np
+#mg_resized= np.array(Image.fromarray(obj=img, mode='F').resize(size=(width, height), resample=Image.BICUBIC)
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, config, flist, edge_flist, mask_flist, augment=True, training=True):
@@ -21,6 +30,7 @@ class Dataset(torch.utils.data.Dataset):
         self.data = self.load_flist(flist)
         self.edge_data = self.load_flist(edge_flist)
         self.mask_data = self.load_flist(mask_flist)
+    
 
         self.input_size = config.INPUT_SIZE
         self.sigma = config.SIGMA
@@ -55,6 +65,7 @@ class Dataset(torch.utils.data.Dataset):
 
         # load image
         img = imread(self.data[index])
+        #print(img)
 
         # gray to rgb
         if len(img.shape) < 3:
@@ -79,7 +90,7 @@ class Dataset(torch.utils.data.Dataset):
             img_gray = img_gray[:, ::-1, ...]
             edge = edge[:, ::-1, ...]
             mask = mask[:, ::-1, ...]
-
+        #print(type(img), type(img_gray), type(edge), type(mask))
         return self.to_tensor(img), self.to_tensor(img_gray), self.to_tensor(edge), self.to_tensor(mask)
 
     def load_edge(self, img, index, mask):
@@ -166,7 +177,7 @@ class Dataset(torch.utils.data.Dataset):
             img = img[j:j + side, i:i + side, ...]
 
         img = scipy.misc.imresize(img, [height, width])
-
+        #img = resize(img, [height, width])
         return img
 
     def load_flist(self, flist):

@@ -71,10 +71,11 @@ class EdgeConnect():
             self.inpaint_model.save()
 
     def train(self):
+        torch.autograd.set_detect_anomaly(True)
         train_loader = DataLoader(
             dataset=self.train_dataset,
             batch_size=self.config.BATCH_SIZE,
-            num_workers=4,
+            num_workers=0,
             drop_last=True,
             shuffle=True
         )

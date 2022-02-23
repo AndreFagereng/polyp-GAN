@@ -91,9 +91,10 @@ def load_config(mode=None):
     if not os.path.exists(args.path):
         os.makedirs(args.path)
 
+    #print(os.listdir())
     # copy config template if does't exist
     if not os.path.exists(config_path):
-        copyfile('./config.yml.example', config_path)
+        copyfile('edge-connect/config.yml.xample', config_path)
 
     # load config file
     config = Config(config_path)
