@@ -81,6 +81,7 @@ class InpaintingData(Dataset):
             image = self.img_trans(image) * 2. - 1.
             mask = F.to_tensor(self.mask_trans(mask))
 
+        print(np.unique(mask.flatten()))
         return image, mask, filename
 
 
