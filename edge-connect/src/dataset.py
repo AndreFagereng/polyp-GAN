@@ -150,7 +150,6 @@ class Dataset(torch.utils.data.Dataset):
             mask = imread(self.mask_data[mask_index])
             mask = self.resize(mask, imgh, imgw)
             mask = (mask > 0).astype(np.uint8) * 255       # threshold due to interpolation
-            print(mask)
             return mask
 
         # test mode: load mask non random

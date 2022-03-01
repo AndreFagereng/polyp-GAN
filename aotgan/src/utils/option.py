@@ -54,7 +54,7 @@ parser.add_argument('--adv_weight', type=float, default=0.01,
 # training specifications 
 parser.add_argument('--iterations', type=int, default=750000,
                     help='the number of iterations for training')
-parser.add_argument('--batch_size', type=int, default=2,
+parser.add_argument('--batch_size', type=int, default=8,
                     help='batch size in each mini-batch')
 parser.add_argument('--port', type=int, default=22334,
                     help='tcp port for distributed training')

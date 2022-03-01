@@ -39,9 +39,9 @@ class TrainOptions:
         self.parser.add_argument('--D_max_iters', type=int, default=5)
         self.parser.add_argument('--lr', type=float, default=1e-5, help='learning rate for training')
 
-        self.parser.add_argument('--train_spe', type=int, default=1000)
+        self.parser.add_argument('--train_spe', type=int, default=10000)
         self.parser.add_argument('--epochs', type=int, default=40)
-        self.parser.add_argument('--viz_steps', type=int, default=5)
+        self.parser.add_argument('--viz_steps', type=int, default=2500)
         self.parser.add_argument('--spectral_norm', type=int, default=1)
 
         self.parser.add_argument('--img_shapes', type=str, default='256,256,3',

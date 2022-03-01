@@ -201,7 +201,6 @@ class EdgeConnect():
                     self.log(logs)
 
                 # sample model at checkpoints
-                print(self.config.SAMPLE_INTERVAL, iteration % self.config.SAMPLE_INTERVAL)
                 if self.config.SAMPLE_INTERVAL and iteration % self.config.SAMPLE_INTERVAL == 0:
                     print('SAMPLINGS')
                     self.sample()
@@ -353,16 +352,15 @@ class EdgeConnect():
     def sample(self, it=None):
         # do not sample when validation set is empty
         if len(self.val_dataset) == 0:
+            print('VALIDATION SET IS EMPTY')
             return
 
         self.edge_model.eval()
         self.inpaint_model.eval()
-
         model = self.config.MODEL
         items = next(self.sample_iterator)
         images, images_gray, edges, masks = self.cuda(*items)
-
-        # edge model
+         # edge model
         if model == 1:
             iteration = self.edge_model.iteration
             inputs = (images_gray * (1 - masks)) + masks
@@ -391,7 +389,6 @@ class EdgeConnect():
         image_per_row = 2
         if self.config.SAMPLE_SIZE <= 6:
             image_per_row = 1
-
         images = stitch_images(
             self.postprocess(images),
             self.postprocess(inputs),
