@@ -59,14 +59,15 @@ class InpaintingData(Dataset):
         image = Image.open(self.image_path[index]).convert('RGB')
         filename = os.path.basename(self.image_path[index])
 
-        if self.mask_type == 'pconv' or self.mask_type == 'irregular_mask':
+        if self.mask_type == 'pconv' or self.mask_type == 'irregular_mask' or self.mask_type == 'progan_mask':
             index = np.random.randint(0, len(self.mask_path))
             mask = Image.open(self.mask_path[index])
             mask = mask.convert('L')
 
         elif self.mask_type == 'masks':
             mask = Image.open(self.mask_path[index])
-            mask = mask.convert('L') 
+            mask = mask.convert('L')
+        
         else:
             mask = np.zeros((self.h, self.w)).astype(np.uint8)
             mask[self.h//4:self.h//4*3, self.w//4:self.w//4*3] = 1
@@ -81,7 +82,7 @@ class InpaintingData(Dataset):
             image = self.img_trans(image) * 2. - 1.
             mask = F.to_tensor(self.mask_trans(mask))
 
-        print(np.unique(mask.flatten()))
+        
         return image, mask, filename
 
 

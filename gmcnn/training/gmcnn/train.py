@@ -45,7 +45,7 @@ for epoch in range(config.epochs):
     for i, data in enumerate(dataloader):
         gt = data['gt'].cuda()
         
-        if config.mask_type == "custom":
+        if "custom" in config.mask_type:
             mask_data = data['mask'].cuda()
             gt = gt / 127.5 - 1
             data_in = {'gt': gt, 'mask': mask_data}

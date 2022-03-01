@@ -30,7 +30,6 @@ class Dataset(torch.utils.data.Dataset):
         self.data = self.load_flist(flist)
         self.edge_data = self.load_flist(edge_flist)
         self.mask_data = self.load_flist(mask_flist)
-    
 
         self.input_size = config.INPUT_SIZE
         self.sigma = config.SIGMA
@@ -151,6 +150,7 @@ class Dataset(torch.utils.data.Dataset):
             mask = imread(self.mask_data[mask_index])
             mask = self.resize(mask, imgh, imgw)
             mask = (mask > 0).astype(np.uint8) * 255       # threshold due to interpolation
+            print(mask)
             return mask
 
         # test mode: load mask non random
@@ -181,6 +181,7 @@ class Dataset(torch.utils.data.Dataset):
         return img
 
     def load_flist(self, flist):
+
         if isinstance(flist, list):
             return flist
 
@@ -196,6 +197,7 @@ class Dataset(torch.utils.data.Dataset):
                     return np.genfromtxt(flist, dtype=np.str, encoding='utf-8')
                 except:
                     return [flist]
+       
 
         return []
 

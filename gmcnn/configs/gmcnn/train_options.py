@@ -92,7 +92,7 @@ class TrainOptions:
 
         assert self.opt.padding in ['SAME', 'MIRROR']
 
-        assert self.opt.mask_type in ['rect', 'stroke', 'custom']
+        assert self.opt.mask_type in ['rect', 'stroke', 'custom', 'custom_r']
 
         str_img_shapes = self.opt.img_shapes.split(',')
         self.opt.img_shapes = [int(x) for x in str_img_shapes]

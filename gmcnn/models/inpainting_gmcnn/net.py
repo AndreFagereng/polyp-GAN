@@ -277,13 +277,13 @@ class InpaintingModel_GMCNN(BaseModel):
         if self.opt.mask_type in ['rect', 'stroke']:
             mask, rect = generate_mask(self.opt.mask_type, self.opt.img_shapes, self.opt.mask_shapes)
             self.mask_01 = torch.from_numpy(mask).cuda().repeat([self.opt.batch_size, 1, 1, 1])
-        elif self.opt.mask_type == 'custom':
+        elif "custom" in self.opt.mask_type:
             mask = self.input['mask']
             self.mask_01 = mask.unsqueeze(1)
             self.mask_01 = self.mask_01.cpu().numpy().astype(np.float32)
             self.mask_01 = torch.from_numpy(self.mask_01).cuda()      
         else:
-            raise ValueError('Only supported mask types is (stroke, rect, custom)')       
+            raise ValueError('Only supported mask types is (stroke, rect, custom, custom_r)')       
         self.mask = self.confidence_mask_layer(self.mask_01)
         
         if self.opt.mask_type == 'rect':

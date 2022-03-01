@@ -29,6 +29,8 @@ class EdgeConnect():
         self.psnr = PSNR(255.0).to(config.DEVICE)
         self.edgeacc = EdgeAccuracy(config.EDGE_THRESHOLD).to(config.DEVICE)
 
+        train_flist = config.TRAIN_FLIST.split('/')[1]
+        
         # test mode
         if self.config.MODE == 2:
             self.test_dataset = Dataset(config, config.TEST_FLIST, config.TEST_EDGE_FLIST, config.TEST_MASK_FLIST, augment=False, training=False)
@@ -36,7 +38,7 @@ class EdgeConnect():
             self.train_dataset = Dataset(config, config.TRAIN_FLIST, config.TRAIN_EDGE_FLIST, config.TRAIN_MASK_FLIST, augment=True, training=True)
             self.val_dataset = Dataset(config, config.VAL_FLIST, config.VAL_EDGE_FLIST, config.VAL_MASK_FLIST, augment=False, training=True)
             self.sample_iterator = self.val_dataset.create_iterator(config.SAMPLE_SIZE)
-
+        
         self.samples_path = os.path.join(config.PATH, 'samples')
         self.results_path = os.path.join(config.PATH, 'results')
 
@@ -47,6 +49,8 @@ class EdgeConnect():
             self.debug = True
 
         self.log_file = os.path.join(config.PATH, 'log_' + model_name + '.dat')
+        self.log_images_folder = os.path.join(config.PATH, 'images')
+
 
     def load(self):
         if self.config.MODEL == 1:
@@ -197,7 +201,9 @@ class EdgeConnect():
                     self.log(logs)
 
                 # sample model at checkpoints
+                print(self.config.SAMPLE_INTERVAL, iteration % self.config.SAMPLE_INTERVAL)
                 if self.config.SAMPLE_INTERVAL and iteration % self.config.SAMPLE_INTERVAL == 0:
+                    print('SAMPLINGS')
                     self.sample()
 
                 # evaluate model at checkpoints
@@ -396,7 +402,8 @@ class EdgeConnect():
         )
 
 
-        path = os.path.join(self.samples_path, self.model_name)
+        #path = os.path.join(self.samples_path, self.model_name)
+        path = self.log_images_folder
         name = os.path.join(path, str(iteration).zfill(5) + ".png")
         create_dir(path)
         print('\nsaving sample ' + name)

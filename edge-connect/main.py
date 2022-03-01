@@ -76,6 +76,7 @@ def load_config(mode=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', '--checkpoints', type=str, default='./checkpoints', help='model checkpoints path (default: ./checkpoints)')
     parser.add_argument('--model', type=int, choices=[1, 2, 3, 4], help='1: edge model, 2: inpaint model, 3: edge-inpaint model, 4: joint model')
+    parser.add_argument('--yml', type=str, default='', help="path to training yml file")
 
     # test mode
     if mode == 2:
@@ -85,8 +86,10 @@ def load_config(mode=None):
         parser.add_argument('--output', type=str, help='path to the output directory')
 
     args = parser.parse_args()
-    config_path = os.path.join(args.path, 'config.yml')
+    
+    yaml_file = args.yml.split('/')[-1]
 
+    config_path = os.path.join(args.path, yaml_file)
     # create checkpoints path if does't exist
     if not os.path.exists(args.path):
         os.makedirs(args.path)
@@ -94,7 +97,8 @@ def load_config(mode=None):
     #print(os.listdir())
     # copy config template if does't exist
     if not os.path.exists(config_path):
-        copyfile('edge-connect/config.yml.xample', config_path)
+        #raise ValueError("load_config:error: yml path does not exists")
+        copyfile(args.yml, config_path)
 
     # load config file
     config = Config(config_path)
