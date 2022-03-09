@@ -28,6 +28,7 @@ def main_worker(id, ngpus_per_node, args):
         print(f'[**] create folder {args.save_dir}')
 
     trainer = Trainer(args)
+    print("CONFIG", args)
     trainer.train()
 
 
