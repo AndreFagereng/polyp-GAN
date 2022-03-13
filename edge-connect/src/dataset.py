@@ -61,6 +61,8 @@ class Dataset(torch.utils.data.Dataset):
     def load_item(self, index):
 
         size = self.input_size
+        if self.mask == 5:
+            size = 256
 
         # load image
         img = imread(self.data[index])
@@ -73,7 +75,6 @@ class Dataset(torch.utils.data.Dataset):
         # resize/crop if needed
         if size != 0:
             img = self.resize(img, size, size)
-
         # create grayscale image
         img_gray = rgb2gray(img)
 
@@ -89,7 +90,7 @@ class Dataset(torch.utils.data.Dataset):
             img_gray = img_gray[:, ::-1, ...]
             edge = edge[:, ::-1, ...]
             mask = mask[:, ::-1, ...]
-        #print(type(img), type(img_gray), type(edge), type(mask))
+        print(img.shape, img_gray.shape, edge.shape, mask.shape)
         return self.to_tensor(img), self.to_tensor(img_gray), self.to_tensor(edge), self.to_tensor(mask)
 
     def load_edge(self, img, index, mask):
@@ -158,6 +159,7 @@ class Dataset(torch.utils.data.Dataset):
             mask = self.resize(mask, imgh, imgw, centerCrop=False)
             mask = rgb2gray(mask)
             mask = (mask > 0).astype(np.uint8) * 255
+            print(mask.shape)
             return mask
 
     def to_tensor(self, img):

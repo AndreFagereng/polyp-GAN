@@ -63,7 +63,7 @@ parser.add_argument('--resume', action='store_true',
 
 
 # log specifications 
-parser.add_argument('--print_every', type=int, default=10000,
+parser.add_argument('--print_every', type=int, default=2500,
                     help='frequency for updating progress bar')
 parser.add_argument('--save_every', type=int, default=10000,
                     help='frequency for saving models')

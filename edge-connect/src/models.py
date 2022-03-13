@@ -41,15 +41,21 @@ class BaseModel(nn.Module):
             self.discriminator.load_state_dict(data['discriminator'])
 
     def save(self):
+        _gen_weight_path = self.gen_weights_path
+        _dis_weight_path = self.dis_weights_path
+
+        _gen_weight_path = _gen_weight_path.replace('_gen.pth', '') + '_' + str(self.iteration) + '_gen.pth'
+        _dis_weight_path = _dis_weight_path.replace('_dis.pth', '') + '_' + str(self.iteration) + '_dis.pth'
+
         print('\nsaving %s...\n' % self.name)
         torch.save({
             'iteration': self.iteration,
             'generator': self.generator.state_dict()
-        }, self.gen_weights_path)
+        }, _gen_weight_path)
 
         torch.save({
             'discriminator': self.discriminator.state_dict()
-        }, self.dis_weights_path)
+        }, _dis_weight_path)
 
 
 class EdgeModel(BaseModel):
