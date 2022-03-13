@@ -10,7 +10,7 @@ class BaseNet(nn.Module):
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
         self.save_dir = opt.checkpoint_dir
-        self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
+        self.device = torch.device("cuda")#torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
 
     def forward(self, *input):
         return super(BaseNet, self).forward(*input)
