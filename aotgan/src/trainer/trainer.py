@@ -51,20 +51,25 @@ class Trainer():
         print(self.args.save_dir)
         try: 
             gpath = sorted(list(glob(os.path.join(self.args.save_dir, 'G*.pt'))))[-1]
+
+            print(os.path.join(self.args.save_dir, 'G*.pt'))
+            print(gpath)
             self.netG.load_state_dict(torch.load(gpath, map_location='cuda'))
             self.iteration = int(os.path.basename(gpath)[1:-3])
             if self.args.global_rank == 0: 
                 print(f'[**] Loading generator network from {gpath}')
         except Exception as e: 
-            print(e)
+            print('COULD NOT LOAD GENERATOR', e)
+
         
         try: 
             dpath = sorted(list(glob(os.path.join(self.args.save_dir, 'D*.pt'))))[-1]
+            
             self.netD.load_state_dict(torch.load(dpath, map_location='cuda'))
             if self.args.global_rank == 0: 
                 print(f'[**] Loading discriminator network from {dpath}')
         except: 
-            pass
+            print('COULD NOT LOAD DISCRIMINATOR')
         
         try: 
             opath = sorted(list(glob(os.path.join(self.args.save_dir, 'O*.pt'))))[-1]
@@ -74,7 +79,7 @@ class Trainer():
             if self.args.global_rank == 0: 
                 print(f'[**] Loading optimizer from {opath}')
         except: 
-            pass
+            print('COULD NOT LOAD OPTIMIZER')
 
 
     def save(self, ):

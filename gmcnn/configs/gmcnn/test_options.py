@@ -11,6 +11,7 @@ class TestOptions:
         self.parser.add_argument('--dataset', type=str, default='paris_streetview',
                                  help='The dataset of the experiment.')
         self.parser.add_argument('--data_file', type=str, default='./imgs/paris-streetview_256x256', help='the file storing testing file paths')
+        self.parser.add_argument('--mask_path', type=str, default='', help='path to custom masks')
         self.parser.add_argument('--test_dir', type=str, default='./test_results', help='models are saved here')
         self.parser.add_argument('--load_model_dir', type=str, default='./checkpoints', help='pretrained models are given here')
         self.parser.add_argument('--seed', type=int, default=1, help='random seed')
@@ -49,7 +50,7 @@ class TestOptions:
         assert self.opt.random_mask in [0, 1]
         self.opt.random_mask = True if self.opt.random_mask == 1 else False
 
-        assert self.opt.mask_type in ['rect', 'stroke']
+        assert self.opt.mask_type in ['rect', 'stroke', 'custom']
 
         str_img_shapes = self.opt.img_shapes.split(',')
         self.opt.img_shapes = [int(x) for x in str_img_shapes]

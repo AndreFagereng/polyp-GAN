@@ -10,6 +10,7 @@ from metric import metric as module_metric
 parser = argparse.ArgumentParser(description='Image Inpainting')
 parser.add_argument('--real_dir', required=True, type=str)
 parser.add_argument('--fake_dir', required=True, type=str)
+parser.add_argument('--size', type=str, default=0)
 parser.add_argument("--metric", type=str, nargs="+")
 args = parser.parse_args()
 
@@ -18,13 +19,18 @@ def read_img(name_pair):
     rname, fname = name_pair
     rimg = Image.open(rname)
     fimg = Image.open(fname)
+    s = int(args.size)
+    if s != 0:
+        rimg = rimg.resize((s, s))
+        fimg = fimg.resize((s, s))
+
     return np.array(rimg), np.array(fimg)
 
 
 def main(num_worker=8):
 
-    real_names = sorted(list(glob(f'{args.real_dir}/*.png')))
-    fake_names = sorted(list(glob(f'{args.fake_dir}/*.png')))
+    real_names = sorted(list(glob(f'{args.real_dir}/*.jpg')))
+    fake_names = sorted(list(glob(f'{args.fake_dir}/*.jpg')))
     print(f'real images: {len(real_names)}, fake images: {len(fake_names)}')
     real_images = []
     fake_images = []
@@ -32,7 +38,6 @@ def main(num_worker=8):
     for rimg, fimg in tqdm(pool.imap_unordered(read_img, zip(real_names, fake_names)), total=len(real_names), desc='loading images'):
         real_images.append(rimg)
         fake_images.append(fimg)
-
 
     # metrics prepare for image assesments
     metrics = {met: getattr(module_metric, met) for met in args.metric}

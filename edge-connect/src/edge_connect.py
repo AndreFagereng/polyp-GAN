@@ -21,7 +21,7 @@ class EdgeConnect():
         elif config.MODEL == 4:
             model_name = 'joint'
 
-        self.debug = True
+        self.debug = False
         self.model_name = model_name
         self.edge_model = EdgeModel(config).to(config.DEVICE)
         self.inpaint_model = InpaintingModel(config).to(config.DEVICE)

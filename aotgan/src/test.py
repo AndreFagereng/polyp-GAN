@@ -23,7 +23,7 @@ def postprocess(image):
 def main_worker(args, use_gpu=True): 
 
     device = torch.device('cuda') if use_gpu else torch.device('cpu')
-    
+    print(args)
     # Model and version
     net = importlib.import_module('model.'+args.model)
     model = net.InpaintGenerator(args).cuda()
@@ -38,18 +38,25 @@ def main_worker(args, use_gpu=True):
     mask_paths = sorted(glob(os.path.join(args.dir_mask, '*.png')))
     os.makedirs(args.outputs, exist_ok=True)
     
+    test_img_size = (512, 512)
     # iteration through datasets
     for ipath, mpath in zip(image_paths, mask_paths): 
-        image = ToTensor()(Image.open(ipath).convert('RGB'))
+        
+        img = Image.open(ipath).convert('RGB').resize(test_img_size)
+        msk = Image.open(mpath).convert('L').resize(test_img_size)
+        print(msk)
+        print(msk.size)
+        print(img.size)
+        
+        image = ToTensor()(img)
         image = (image * 2.0 - 1.0).unsqueeze(0)
-        mask = ToTensor()(Image.open(mpath).convert('L'))
+        mask = ToTensor()(msk)
         mask = mask.unsqueeze(0)
         image, mask = image.cuda(), mask.cuda()
         image_masked = image * (1 - mask.float()) + mask
-        
+
         with torch.no_grad():
             pred_img = model(image_masked, mask)
-
         comp_imgs = (1 - mask) * image + mask * pred_img
         image_name = os.path.basename(ipath).split('.')[0]
         postprocess(image_masked[0]).save(os.path.join(args.outputs, f'{image_name}_masked.png'))
