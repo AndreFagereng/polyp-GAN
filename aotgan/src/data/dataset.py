@@ -59,13 +59,28 @@ class InpaintingData(Dataset):
         image = Image.open(self.image_path[index]).convert('RGB')
         filename = os.path.basename(self.image_path[index])
 
+        print(self.image_path[index])
+
         if self.mask_type == 'pconv' or self.mask_type == 'irregular_mask' or self.mask_type == 'progan_mask':
             index = np.random.randint(0, len(self.mask_path))
             mask = Image.open(self.mask_path[index])
             mask = mask.convert('L')
 
         elif self.mask_type == 'masks':
-            mask = Image.open(self.mask_path[index])
+
+            image_filename = self.image_path[index].split('/')[-1]
+            print(image_filename)
+            # Find correct mask
+            mask_path = ''
+            for p in self.mask_path:
+                if image_filename in p:
+                    mask_path = p
+                    break
+            print(mask_path)
+            print()
+
+            #mask = Image.open(self.mask_path[index])
+            mask = Image.open(mask_path)
             mask = mask.convert('L')
         
         else:
