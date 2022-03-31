@@ -14,12 +14,12 @@ class BaseModel(nn.Module):
         self.config = config
         self.iteration = 0
 
-        self.gen_weights_path = os.path.join(config.PATH, name + '_425000_gen.pth')
-        self.dis_weights_path = os.path.join(config.PATH, name + '_dis.pth')
-        
+        self.gen_weights_path = os.path.join(config.PATH, name + '_425000_432400_gen.pth')
+        self.dis_weights_path = os.path.join(config.PATH, name + '_425000_dis.pth')
+        print(self.gen_weights_path)
 
     def load(self):
-        print(self.gen_weights_path)
+        print('Here', self.gen_weights_path)
         if os.path.exists(self.gen_weights_path):
             print('Loading %s generator...' % self.name)
 

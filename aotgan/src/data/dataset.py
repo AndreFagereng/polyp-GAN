@@ -69,15 +69,12 @@ class InpaintingData(Dataset):
         elif self.mask_type == 'masks':
 
             image_filename = self.image_path[index].split('/')[-1]
-            print(image_filename)
             # Find correct mask
             mask_path = ''
             for p in self.mask_path:
                 if image_filename in p:
                     mask_path = p
                     break
-            print(mask_path)
-            print()
 
             #mask = Image.open(self.mask_path[index])
             mask = Image.open(mask_path)

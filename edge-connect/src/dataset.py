@@ -14,9 +14,9 @@ from skimage.feature import canny
 from skimage.color import rgb2gray, gray2rgb
 from .utils import create_mask
 
-def resize(inp, r):
-    
-    return np.array(Image.fromarray(inp).resize(r))
+#def resize(inp, r):
+#    
+#    return np.array(Image.fromarray(inp).resize(r))
 #def imread(inp):
 #    from PIL import Image
 #import numpy as np
@@ -48,7 +48,8 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         try:
             item = self.load_item(index)
-        except:
+        except Exception as e:
+            print(e)
             print('loading error: ' + self.data[index])
             item = self.load_item(0)
 
@@ -59,7 +60,6 @@ class Dataset(torch.utils.data.Dataset):
         return os.path.basename(name)
 
     def load_item(self, index):
-
         size = self.input_size
         if self.mask == 6:
             size = 256
@@ -79,7 +79,13 @@ class Dataset(torch.utils.data.Dataset):
         img_gray = rgb2gray(img)
 
         # load mask
-        mask = self.load_mask(img, index)
+        path_to_img = self.data[index]
+
+        filename = path_to_img.split('/')[-1]
+
+        file_path = '/'.join(self.mask_data[0].split('/')[0:-1]) + '/' + filename
+
+        mask = self.load_mask(img, index, f=file_path)
 
         # load edge
         edge = self.load_edge(img_gray, index, mask)
@@ -93,13 +99,15 @@ class Dataset(torch.utils.data.Dataset):
         #print(img.shape, img_gray.shape, edge.shape, mask.shape)
         return self.to_tensor(img), self.to_tensor(img_gray), self.to_tensor(edge), self.to_tensor(mask)
 
+
     def load_edge(self, img, index, mask):
         sigma = self.sigma
 
         # in test mode images are masked (with masked regions),
         # using 'mask' parameter prevents canny to detect edges for the masked regions
-        mask = None if self.training else (1 - mask / 255).astype(np.bool)
-
+        mask =  None #if self.training else (1 - mask / 255).astype(np.bool)
+        #print(mask)
+        #print(mask.shape)
         # canny
         if self.edge == 1:
             # no edge
@@ -109,7 +117,6 @@ class Dataset(torch.utils.data.Dataset):
             # random sigma
             if sigma == 0:
                 sigma = random.randint(1, 4)
-
             return canny(img, sigma=sigma, mask=mask).astype(np.float)
 
         # external
@@ -119,14 +126,21 @@ class Dataset(torch.utils.data.Dataset):
             edge = self.resize(edge, imgh, imgw)
 
             # non-max suppression
-            if self.nms == 1:
-                edge = edge * canny(img, sigma=sigma, mask=mask)
+            #if self.nms == 1:
+            #    edge = edge * canny(img, sigma=sigma, mask=mask)
 
             return edge
 
-    def load_mask(self, img, index):
+    def load_mask(self, img, index, f):
         imgh, imgw = img.shape[0:2]
         mask_type = self.mask
+
+        if f is not None:
+            mask = imread(f)
+            mask = self.resize(mask, imgh, imgw)
+            #mask = rgb2gray(mask)
+            mask = (mask > 0).astype(np.uint8) * 255       # threshold due to interpolation
+            return mask
 
         # external + random block
         if mask_type == 4:
@@ -159,7 +173,6 @@ class Dataset(torch.utils.data.Dataset):
             mask = self.resize(mask, imgh, imgw, centerCrop=False)
             mask = rgb2gray(mask)
             mask = (mask > 0).astype(np.uint8) * 255
-            print(mask.shape)
             return mask
 
     def to_tensor(self, img):

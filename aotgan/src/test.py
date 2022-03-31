@@ -35,11 +35,13 @@ def main_worker(args, use_gpu=True):
     for ext in ['.jpg', '.png']: 
         image_paths.extend(glob(os.path.join(args.dir_image, '*'+ext)))
     image_paths.sort()
-    mask_paths = sorted(glob(os.path.join(args.dir_mask, '*.png')))
+    mask_paths = sorted(glob(os.path.join(args.dir_mask, '*.jpg')))
     os.makedirs(args.outputs, exist_ok=True)
     
     test_img_size = (512, 512)
     # iteration through datasets
+    print(image_paths)
+    print(mask_paths)
     for ipath, mpath in zip(image_paths, mask_paths): 
         
         img = Image.open(ipath).convert('RGB').resize(test_img_size)

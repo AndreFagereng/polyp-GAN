@@ -73,10 +73,17 @@ print(edges)
 import shutil
 
 
-test_img = "data/test-set/pretraining_test_set/96ab9e93-1678-4736-bda8-a2bfe2599492.jpg"
+#test_img = "data/test-set/pretraining_test_set/96ab9e93-1678-4736-bda8-a2bfe2599492.jpg"
 test_img = "data/kvasir-seq-pretrain/images/0a0d358f-7389-4e76-b4e3-8139004d406a.jpg"
-test_img = "data/kvasir-seq-pretrain/images/aaf7233d-0a03-47aa-8caf-cd83a51bdb6f.jpg"
-test_img = "data/kvasir-seq-pretrain/images/aaeff39b-5321-4229-96b7-60cbd26d61bd.jpg"
+#test_img = "data/kvasir-seq-pretrain/images/aaf7233d-0a03-47aa-8caf-cd83a51bdb6f.jpg"
+#test_img = "data/kvasir-seq-pretrain/images/aaeff39b-5321-4229-96b7-60cbd26d61bd.jpg"
+#test_img = "data/kvasir-seq-pretrain/images/aaccf08e-0fdb-4972-9fe2-830b1e1379a5.jpg"
+#test_img = "data/kvasir-seq-pretrain/images/aad36a28-bf6a-4590-a9d7-087e797aa224.jpg"
+#test_img = "data/kvasir-seq-pretrain/images/aafb0683-7f8b-4243-b460-6e7c65f6449b.jpg"
+#test_img = "data/kvasir-seq-pretrain/images/aad69695-a1aa-4c41-8068-8b6e4beb0151.jpg"
+#test_img = "data/finetune/images_test/cju1aqqv02qwz0878a5cyhr67.jpg"
+#test_img = "data/finetune/images_test/cju7b3f5h1sm40755i572jden.jpg"
+test_img = "data/test-set/pretraining_test_set/96ff1f9f-91dd-4598-97a5-5416eb0b3c03.jpg"
 
 shutil.copy(test_img, path_to_img + '/ck2bxknhjvs1x0794iogrq49k.jpg')
 #shutil.copy(image_path, path_to_img + '/{}'.format(filename))

@@ -21,7 +21,7 @@ class EdgeConnect():
         elif config.MODEL == 4:
             model_name = 'joint'
 
-        self.debug = False
+        self.debug = True
         self.model_name = model_name
         self.edge_model = EdgeModel(config).to(config.DEVICE)
         self.inpaint_model = InpaintingModel(config).to(config.DEVICE)
@@ -35,6 +35,7 @@ class EdgeConnect():
         if self.config.MODE == 2:
             self.test_dataset = Dataset(config, config.TEST_FLIST, config.TEST_EDGE_FLIST, config.TEST_MASK_FLIST, augment=False, training=False)
         else:
+            print(config.TRAIN_FLIST)
             self.train_dataset = Dataset(config, config.TRAIN_FLIST, config.TRAIN_EDGE_FLIST, config.TRAIN_MASK_FLIST, augment=True, training=True)
             self.val_dataset = Dataset(config, config.VAL_FLIST, config.VAL_EDGE_FLIST, config.VAL_MASK_FLIST, augment=False, training=True)
             self.sample_iterator = self.val_dataset.create_iterator(config.SAMPLE_SIZE)
@@ -51,6 +52,7 @@ class EdgeConnect():
         self.log_file = os.path.join(config.PATH, 'log_' + model_name + '.dat')
         self.log_images_folder = os.path.join(config.PATH, 'images')
 
+        #self.load()
 
     def load(self):
         if self.config.MODEL == 1:
