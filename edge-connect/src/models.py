@@ -14,7 +14,7 @@ class BaseModel(nn.Module):
         self.config = config
         self.iteration = 0
 
-        self.gen_weights_path = os.path.join(config.PATH, name + '_425000_432400_gen.pth')
+        self.gen_weights_path = os.path.join(config.PATH, name + '_425000_432000_gen.pth')
         self.dis_weights_path = os.path.join(config.PATH, name + '_425000_dis.pth')
         print(self.gen_weights_path)
 

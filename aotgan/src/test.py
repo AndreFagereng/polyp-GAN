@@ -37,11 +37,16 @@ def main_worker(args, use_gpu=True):
     image_paths.sort()
     mask_paths = sorted(glob(os.path.join(args.dir_mask, '*.jpg')))
     os.makedirs(args.outputs, exist_ok=True)
+    os.makedirs(os.path.join(args.outputs, 'images'))
     
-    test_img_size = (512, 512)
+    test_img_size = (256, 256)
     # iteration through datasets
-    print(image_paths)
-    print(mask_paths)
+    #print(image_paths)
+    #print(mask_paths)
+
+    image_paths = image_paths[:500]
+    mask_paths = mask_paths[:len(image_paths)]
+
     for ipath, mpath in zip(image_paths, mask_paths): 
         
         img = Image.open(ipath).convert('RGB').resize(test_img_size)
@@ -62,8 +67,10 @@ def main_worker(args, use_gpu=True):
         comp_imgs = (1 - mask) * image + mask * pred_img
         image_name = os.path.basename(ipath).split('.')[0]
         postprocess(image_masked[0]).save(os.path.join(args.outputs, f'{image_name}_masked.png'))
-        postprocess(pred_img[0]).save(os.path.join(args.outputs, f'{image_name}_pred.png'))
-        postprocess(comp_imgs[0]).save(os.path.join(args.outputs, f'{image_name}_comp.png'))
+        #postprocess(pred_img[0]).save(os.path.join(args.outputs, f'{image_name}_pred.png'))
+        img.save(os.path.join(args.outputs,f'{image_name}_ori.png'))
+        postprocess(comp_imgs[0]).save(os.path.join(os.path.join(args.outputs, 'images'), f'{image_name}.png'))
+        postprocess(comp_imgs[0]).save(os.path.join(args.outputs, f'{image_name}.png'))
         print(f'saving to {os.path.join(args.outputs, image_name)}')
 
 
